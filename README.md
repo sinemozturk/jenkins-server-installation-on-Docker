@@ -1,6 +1,6 @@
 # CREATE A JENKINS SERVER ON DOCKER CONTAINER
 
-
+To install a Jenkins server on a Docker container, you can follow these steps:
 
 ## S T E P S 
 1. Pull the Jenkins Docker image:
@@ -60,7 +60,79 @@ docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword
 
 ![](./images/j3.jpg)
 
+## SSH INTO JENKINS SERVER RUNNING ON DOCKER CONTAINER
 
+
+To SSH into a Jenkins container (or any Docker container), you can use the docker exec command with an interactive shell. Here’s how you can do it:
+
+
+- Check if the Jenkins container is running:
+
+```bash
+docker ps
+```
+
+![](./images/d2.jpg)
+
+- SSH into the Jenkins container:
+
+```bash
+docker exec -it jenkins bash
+```
+
+- You should now see:
+
+![](./images/d3.jpg)
+
+
+## HOW TO EXECUTE JOBS IN A REMOTE MACHINE (ANOTHER DOCKER CONTAINER) WITH JENKINS
+
+- Create a file and name `CentOS`
+
+```bash
+mkdir CentOS
+ls
+```
+
+![](./images/d4.jpg)
+
+- Create a [Dockerfile](/CentOS/Dockerfile) for CentOS container ; 
+
+```bash
+touch Dockerfile
+```
+
+- Now you can use text editor tools (nano,vim..) copy and paste following; 
+
+```Dockerfile
+FROM centos
+
+# Install OpenSSH server
+RUN yum -y install openssh-server
+
+# Create a user and set up SSH access
+RUN useradd remote_user && \
+    echo "remote_user:1234" | chpasswd && \
+    mkdir /home/remote_user/.ssh && \
+    chmod 700 /home/remote_user/.ssh
+```
+
+
+
+
+
+```bash
+
+```
+```bash
+
+```
+```bash
+
+```
+```bash
+
+```
 
 ```bash
 
@@ -83,28 +155,18 @@ docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword
 ```bash
 
 ```
-
 ```bash
 
 ```
-```bash
 
-```
-```bash
+#!/bin/bash
 
-```
-```bash
+NAME=$1
+LASTNAME=$2
+SHOW=$3
 
-```
-```bash
-
-```
-```bash
-
-```
-```bash
-
-```
-```bash
-
-```
+if [ "$SHOW" = "true"]; then
+        echo "HELLO, $NAME $LASTNAME"
+else
+        echo "If you want to see the name, please mark the SHOW option"
+fi
