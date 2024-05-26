@@ -1,0 +1,9 @@
+Additional Tips
+Persisting Jenkins data:
+The -v jenkins_home:/var/jenkins_home option ensures that Jenkins data is persisted even if the container is stopped or removed. If you need to back up Jenkins data, you can copy the data from this volume.
+
+Managing Jenkins with Docker Compose:
+You can also use Docker Compose to manage Jenkins and other services. Here's an example docker-compose.yml file:
+
+
+Run docker-compose up -d to start Jenkins with Docker Compose.
