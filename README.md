@@ -127,6 +127,22 @@ ssh-keygen -f remote-key
 ```
 ![](./images/d5.jpg)
 
+- Now we need to copy this key into remote container 
+- Add following file to [Dockerfile](/CentOS/Dockerfile)
+
+```Dockerfile
+COPY remote-key.pub /home/remote-user/.ssh/authorized_keys
+
+```
+
+- We need to make sure the remote-user that we created earlier is the owner of everything under the `/home/remote-user/.ssh` folder. Add following scripts to Dockerfile
+
+```Dockerfile
+RUN chown remote_user:remote_user -R /home/remote-user/.ssh
+```
+
+
+
 
 
 
