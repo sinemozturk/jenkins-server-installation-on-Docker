@@ -96,7 +96,7 @@ ls
 
 ![](./images/d4.jpg)
 
-- Create a [Dockerfile](/CentOS/Dockerfile) for CentOS container ; 
+- Create a [Dockerfile](/CentOS/Dockerfile) for CentOS image ; 
 
 ```bash
 touch Dockerfile
@@ -118,8 +118,47 @@ RUN useradd remote_user && \
 ```
 
 
+## Create SSH Key for the remote connection
+
+The command `ssh-keygen -f remote-key `is used to generate SSH keys and specifies the output file name for the key. Here's a detailed explanation of the command:
+
+```bash
+ssh-keygen -f remote-key
+```
+![](./images/d5.jpg)
 
 
+
+
+
+- Create an image from [Dockerfile](/CentOS/Dockerfile)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```bash
+
+```
+```bash
+
+```
+```bash
+
+```
 
 ```bash
 
@@ -133,7 +172,6 @@ RUN useradd remote_user && \
 ```bash
 
 ```
-
 ```bash
 
 ```
@@ -146,27 +184,3 @@ RUN useradd remote_user && \
 ```bash
 
 ```
-```bash
-
-```
-```bash
-
-```
-```bash
-
-```
-```bash
-
-```
-
-#!/bin/bash
-
-NAME=$1
-LASTNAME=$2
-SHOW=$3
-
-if [ "$SHOW" = "true"]; then
-        echo "HELLO, $NAME $LASTNAME"
-else
-        echo "If you want to see the name, please mark the SHOW option"
-fi
