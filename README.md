@@ -138,12 +138,48 @@ COPY remote-key.pub /home/remote-user/.ssh/authorized_keys
 - We need to make sure the remote-user that we created earlier is the owner of everything under the `/home/remote-user/.ssh` folder. Add following scripts to Dockerfile
 
 ```Dockerfile
-RUN chown remote_user:remote_user -R /home/remote-user/.ssh
+RUN chown remote_user:remote_user -R /home/remote-user/.ssh/ && \
+    chmod 660 /home/remote_user/.ssh/authorized_keys
 ```
 
+- SSH needs to create some global keys, following command is create the global keys
 
+```Dockerfile
+RUN /usr/sbin/sshd-keygen
+```
 
+- Start the SSH server
 
+```Dockerfile
+CMD /usr/sbin/sshd -D
+```
+
+- Now we need to modify [docker-compose.yml](./Jenkins/docker-compose.yml) file.
+
+```yml
+version: '3'
+services:
+  jenkins:
+    container_name: jenkins
+    image: jenkins/jenkins:lts
+    ports:
+      - "8080:8080"
+    volumes:
+      - "$PWD/jenkins_home:/var/jenkins_home"
+    networks:
+      - net
+  remote_host:
+    container_name: remote-host
+    image: remote-host
+    build:
+      context: CentOS
+    networks:
+      - net
+networks:
+  net:
+```
+
+- To read all in details -> [Docker Compose file Details](./Jenkins/docker-compose-details.md)
 
 
 
