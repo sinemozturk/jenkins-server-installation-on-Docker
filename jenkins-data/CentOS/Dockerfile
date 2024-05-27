@@ -1,7 +1,6 @@
-FROM centos
+FROM centos:7
 
-# Install OpenSSH server
-RUN yum -y install openssh-server
+RUN yum -y install openssh-server openssh-clients
 
 # Create a user and set up SSH access
 RUN useradd remote_user && \
@@ -14,28 +13,26 @@ RUN useradd remote_user && \
 # - mkdir /home/remote_user/.ssh: creates the .ssh directory for SSH keys
 # - chmod 700 /home/remote_user/.ssh: sets the directory permissions to 700
 
-COPY remote-key.pub /home/remote-user/.ssh/authorized_keys
+COPY remote-key.pub /home/remote_user/.ssh/authorized_keys
 
-#The command COPY remote-key.pub /home/remote-user/.ssh is intended to
-#     copy the remote-key.pub file from your local machine to
-#         the /home/remote-user/.ssh/authorized directory inside the Docker image.
+#The command COPY remote-key.pub /home/remote_user/.ssh is intended to
+#     copy the remote_key.pub file from your local machine to
+#         the /home/remote_user/.ssh/authorized directory inside the Docker image.
 
 
 
-RUN chown remote_user:remote_user -R /home/remote-user/.ssh/ && \
+RUN chown remote_user:remote_user -R /home/remote_user/.ssh/ && \
     chmod 660 /home/remote_user/.ssh/authorized_keys
 
-# The RUN chown remote_user:remote_user -R /home/remote-user/.ssh command in a Dockerfile
-#   changes the ownership of the /home/remote-user/.ssh directory and all of its contents to 
+# The RUN chown remote_user:remote_user -R /home/rremote_user/.ssh command in a Dockerfile
+#   changes the ownership of the /home/remote_user/.ssh directory and all of its contents to 
 #     the user remote_user. This is important for ensuring that the remote_user 
 #      has the correct permissions to read and write files in the .ssh directory.
 # The command you provided sets > chmod 660 /home/remote_user/.ssh/authorized_keys < 
 #    the permissions of the /home/remote_user/.ssh/authorized_keys file to 660.
 
-RUN /usr/sbin/sshd-keygen
+RUN ssh-keygen -A
 
-# The command RUN /usr/sbin/sshd-keygen is typically used in 
-#   a Dockerfile to generate SSH host keys for the SSH daemon
 
 CMD /usr/sbin/sshd -D
 

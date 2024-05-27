@@ -15,6 +15,5 @@ services:
       context: CentOS
     networks:
       - net
-
 networks:
   net:

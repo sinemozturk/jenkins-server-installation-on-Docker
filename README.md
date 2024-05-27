@@ -87,14 +87,20 @@ docker exec -it jenkins bash
 
 ## HOW TO EXECUTE JOBS IN A REMOTE MACHINE (ANOTHER DOCKER CONTAINER) WITH JENKINS
 
-- Create a file and name `CentOS`
+First of all we will create a container and then we will configure it. 
 
+- Create a folder and name `jenkins-data` and cd inside
+
+```bash
+mkdir jenkins-data
+cd jenkins-data
+```
+
+- Create a folder and name it `CentOS`
 ```bash
 mkdir CentOS
 ls
 ```
-
-![](./images/d4.jpg)
 
 - Create a [Dockerfile](/CentOS/Dockerfile) for CentOS image ; 
 
@@ -105,7 +111,7 @@ touch Dockerfile
 - Now you can use text editor tools (nano,vim..) copy and paste following; 
 
 ```Dockerfile
-FROM centos
+FROM centos:7
 
 # Install OpenSSH server
 RUN yum -y install openssh-server
@@ -131,11 +137,11 @@ ssh-keygen -f remote-key
 - Add following file to [Dockerfile](/CentOS/Dockerfile)
 
 ```Dockerfile
-COPY remote-key.pub /home/remote-user/.ssh/authorized_keys
+COPY remote-key.pub /home/remote_user/.ssh/authorized_keys
 
 ```
 
-- We need to make sure the remote-user that we created earlier is the owner of everything under the `/home/remote-user/.ssh` folder. Add following scripts to Dockerfile
+- We need to make sure the remote-user that we created earlier is the owner of everything under the `/home/remote_user/.ssh` folder. Add following scripts to Dockerfile
 
 ```Dockerfile
 RUN chown remote_user:remote_user -R /home/remote-user/.ssh/ && \
@@ -145,7 +151,7 @@ RUN chown remote_user:remote_user -R /home/remote-user/.ssh/ && \
 - SSH needs to create some global keys, following command is create the global keys
 
 ```Dockerfile
-RUN /usr/sbin/sshd-keygen
+RUN ssh-keygen -A
 ```
 
 - Start the SSH server
@@ -179,21 +185,79 @@ networks:
   net:
 ```
 
-- To read all in details -> [Docker Compose file Details](./Jenkins/docker-compose-details.md)
+```sh
+sudo chown 1000:1000 jenkins_home -R
+```
 
 
+### Build Remote-Host Conrainer from Dockerfile
 
-- Create an image from [Dockerfile](/CentOS/Dockerfile)
+- We created our Dockerfile for Centos container. Now we need to build our custom image with following;
+
+```bash
+docker-compose build
+```
+
+![](./images/centos1.jpg)
 
 
+- To check Docker image thay we just created with Dockerfile
+
+```bash
+docker images
+```
+
+![](./images/centos%20image.jpg)
+
+- Now we need to create our Centos `container` from this custom image
+
+```bash
+docker-compose up -d
+```
+![](./images/centos%20container.jpg)
+
+- We successfully created 2 continers, check containers; 
+
+```bash
+docker ps
+```
+
+![](./images/both%20containers.jpg)
+
+### Connect to CentOS from Jenkins container
+
+- First of all, we need to copy the `remote-key.pub` inside the Centos folder to jenkins /temp file
+
+```bash
+docker cp remote-key.pub <<containerid or name >>:/tmp/remote-key
+```
+
+![](./images/remote%20key%20copy.jpg)
 
 
+- Now we need to connect Jenkins container
 
+```bash
+docker exec -it <<container id >> bash
+```
+![](./images/jenkins-ssh.jpg)
 
+- You can cd to /tmp folder and do ls
 
+```bash
+cd /tmp
+ls
+```
 
+![](./images/key%20in%20jenkins.jpg)
 
+- Now let's connect to our Centos container from Jenkins container
 
+```bash
+ssh -i remote-key  remote_user@remote_host
+```
+
+![](./images/connection%20to%20centos.jpg)
 
 
 
